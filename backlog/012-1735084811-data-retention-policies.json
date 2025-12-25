@@ -2,7 +2,7 @@
   "id": "012",
   "timestamp": 1735084811,
   "title": "Implement Data Retention Policies",
-  "status": "TODO",
+  "status": "DONE",
   "priority": "P1",
   "effort": {"estimate": "2h", "actual": null},
   "created": "2025-12-25T00:00:11Z",

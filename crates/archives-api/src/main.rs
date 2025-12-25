@@ -59,7 +59,10 @@ async fn main() -> anyhow::Result<()> {
         Err(e) => error!(error = %e, "ClickHouse connection failed - continuing anyway"),
     }
 
-    let state = Arc::new(AppState { clickhouse, config: config.clone() });
+    let state = Arc::new(AppState {
+        clickhouse,
+        config: config.clone(),
+    });
 
     // Build router
     let app = Router::new()
@@ -69,7 +72,9 @@ async fn main() -> anyhow::Result<()> {
         .route("/v1/logs/{id}", get(get_log_handler))
         .route("/v1/metrics/query", post(query_metrics_handler))
         .route("/v1/metrics/names", get(list_metrics_handler))
-        .layer(TimeoutLayer::new(Duration::from_secs(config.api.timeout_secs)))
+        .layer(TimeoutLayer::new(Duration::from_secs(
+            config.api.timeout_secs,
+        )))
         .layer(TraceLayer::new_for_http())
         .layer(CorsLayer::permissive())
         .with_state(state);
@@ -104,8 +109,20 @@ async fn shutdown_signal() {
 /// Health check endpoint
 async fn health_handler(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     match state.clickhouse.health_check().await {
-        Ok(true) => (StatusCode::OK, Json(HealthResponse { status: "healthy", clickhouse: true })),
-        _ => (StatusCode::SERVICE_UNAVAILABLE, Json(HealthResponse { status: "unhealthy", clickhouse: false })),
+        Ok(true) => (
+            StatusCode::OK,
+            Json(HealthResponse {
+                status: "healthy",
+                clickhouse: true,
+            }),
+        ),
+        _ => (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(HealthResponse {
+                status: "unhealthy",
+                clickhouse: false,
+            }),
+        ),
     }
 }
 
@@ -118,22 +135,28 @@ struct HealthResponse {
 /// System status endpoint
 async fn status_handler(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     match state.clickhouse.get_stats().await {
-        Ok(stats) => (StatusCode::OK, Json(StatusResponse {
-            status: "ok",
-            version: env!("CARGO_PKG_VERSION"),
-            log_count: stats.log_count,
-            log_bytes: stats.log_bytes,
-            metric_count: stats.metric_count,
-            metric_bytes: stats.metric_bytes,
-        })),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(StatusResponse {
-            status: "error",
-            version: env!("CARGO_PKG_VERSION"),
-            log_count: 0,
-            log_bytes: 0,
-            metric_count: 0,
-            metric_bytes: 0,
-        })),
+        Ok(stats) => (
+            StatusCode::OK,
+            Json(StatusResponse {
+                status: "ok",
+                version: env!("CARGO_PKG_VERSION"),
+                log_count: stats.log_count,
+                log_bytes: stats.log_bytes,
+                metric_count: stats.metric_count,
+                metric_bytes: stats.metric_bytes,
+            }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(StatusResponse {
+                status: "error",
+                version: env!("CARGO_PKG_VERSION"),
+                log_count: 0,
+                log_bytes: 0,
+                metric_count: 0,
+                metric_bytes: 0,
+            }),
+        ),
     }
 }
 
@@ -167,11 +190,17 @@ async fn search_logs_handler(
     };
 
     match state.clickhouse.search_logs(&params).await {
-        Ok(logs) => (StatusCode::OK, Json(LogSearchResponse { logs, error: None })),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(LogSearchResponse {
-            logs: vec![],
-            error: Some(e.to_string()),
-        })),
+        Ok(logs) => (
+            StatusCode::OK,
+            Json(LogSearchResponse { logs, error: None }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(LogSearchResponse {
+                logs: vec![],
+                error: Some(e.to_string()),
+            }),
+        ),
     }
 }
 
@@ -199,9 +228,12 @@ async fn get_log_handler(
     Path(id): Path<String>,
 ) -> impl IntoResponse {
     // Note: OTEL logs don't have stable IDs, this would need trace_id + timestamp
-    (StatusCode::NOT_IMPLEMENTED, Json(serde_json::json!({
-        "error": "Log retrieval by ID not implemented - use search with trace_id filter"
-    })))
+    (
+        StatusCode::NOT_IMPLEMENTED,
+        Json(serde_json::json!({
+            "error": "Log retrieval by ID not implemented - use search with trace_id filter"
+        })),
+    )
 }
 
 /// Query metrics endpoint
@@ -221,11 +253,17 @@ async fn query_metrics_handler(
     };
 
     match state.clickhouse.query_metrics(&params).await {
-        Ok(data) => (StatusCode::OK, Json(MetricQueryResponse { data, error: None })),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(MetricQueryResponse {
-            data: vec![],
-            error: Some(e.to_string()),
-        })),
+        Ok(data) => (
+            StatusCode::OK,
+            Json(MetricQueryResponse { data, error: None }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(MetricQueryResponse {
+                data: vec![],
+                error: Some(e.to_string()),
+            }),
+        ),
     }
 }
 
@@ -249,11 +287,17 @@ struct MetricQueryResponse {
 /// List metric names endpoint
 async fn list_metrics_handler(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     match state.clickhouse.list_metric_names().await {
-        Ok(names) => (StatusCode::OK, Json(MetricNamesResponse { names, error: None })),
-        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(MetricNamesResponse {
-            names: vec![],
-            error: Some(e.to_string()),
-        })),
+        Ok(names) => (
+            StatusCode::OK,
+            Json(MetricNamesResponse { names, error: None }),
+        ),
+        Err(e) => (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            Json(MetricNamesResponse {
+                names: vec![],
+                error: Some(e.to_string()),
+            }),
+        ),
     }
 }
 

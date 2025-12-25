@@ -4,11 +4,21 @@ use crate::{LogsCommands, OutputFormat};
 use chrono::{Duration, Utc};
 use serde_json::Value;
 
-pub async fn handle(api_url: &str, command: LogsCommands, format: OutputFormat) -> anyhow::Result<()> {
+pub async fn handle(
+    api_url: &str,
+    command: LogsCommands,
+    format: OutputFormat,
+) -> anyhow::Result<()> {
     let client = reqwest::Client::new();
 
     match command {
-        LogsCommands::Search { query, hours, severity, service, limit } => {
+        LogsCommands::Search {
+            query,
+            hours,
+            severity,
+            service,
+            limit,
+        } => {
             let now = Utc::now();
             let start = now - Duration::hours(hours as i64);
 
@@ -39,7 +49,11 @@ pub async fn handle(api_url: &str, command: LogsCommands, format: OutputFormat) 
             print_logs(&resp, format);
         }
 
-        LogsCommands::Tail { count, severity, service } => {
+        LogsCommands::Tail {
+            count,
+            severity,
+            service,
+        } => {
             let now = Utc::now();
             let start = now - Duration::minutes(10);
 
@@ -91,11 +105,20 @@ pub async fn handle(api_url: &str, command: LogsCommands, format: OutputFormat) 
                 }
                 _ => {
                     if let Some(data) = resp.get("data") {
-                        if let Some(patterns) = data.get("top_patterns").and_then(|p| p.as_array()) {
-                            println!("Top {} error patterns (last {} hours):\n", patterns.len(), hours);
+                        if let Some(patterns) = data.get("top_patterns").and_then(|p| p.as_array())
+                        {
+                            println!(
+                                "Top {} error patterns (last {} hours):\n",
+                                patterns.len(),
+                                hours
+                            );
                             for (i, pattern) in patterns.iter().enumerate() {
-                                let count = pattern.get("count").and_then(|c| c.as_u64()).unwrap_or(0);
-                                let msg = pattern.get("pattern").and_then(|p| p.as_str()).unwrap_or("");
+                                let count =
+                                    pattern.get("count").and_then(|c| c.as_u64()).unwrap_or(0);
+                                let msg = pattern
+                                    .get("pattern")
+                                    .and_then(|p| p.as_str())
+                                    .unwrap_or("");
                                 println!("{}. [{}x] {}", i + 1, count, msg);
                             }
                         }
@@ -125,12 +148,18 @@ fn print_logs(resp: &Value, format: OutputFormat) {
         }
         OutputFormat::Table => {
             if let Some(logs) = resp.get("logs").and_then(|l| l.as_array()) {
-                println!("{:<20} {:<8} {:<20} {}", "TIMESTAMP", "SEVERITY", "SERVICE", "MESSAGE");
+                println!(
+                    "{:<20} {:<8} {:<20} {}",
+                    "TIMESTAMP", "SEVERITY", "SERVICE", "MESSAGE"
+                );
                 println!("{}", "-".repeat(100));
                 for log in logs {
                     let ts = log.get("timestamp").and_then(|t| t.as_str()).unwrap_or("");
                     let sev = log.get("severity").and_then(|s| s.as_str()).unwrap_or("");
-                    let svc = log.get("service_name").and_then(|s| s.as_str()).unwrap_or("-");
+                    let svc = log
+                        .get("service_name")
+                        .and_then(|s| s.as_str())
+                        .unwrap_or("-");
                     let msg = log.get("body").and_then(|b| b.as_str()).unwrap_or("");
                     let msg_short = if msg.len() > 60 { &msg[..60] } else { msg };
                     println!("{:<20} {:<8} {:<20} {}", &ts[..19], sev, svc, msg_short);

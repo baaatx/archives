@@ -84,7 +84,9 @@ pub fn create_tool_registry() -> ToolRegistry {
     // tail_logs tool
     registry.register(McpTool {
         name: "tail_logs".to_string(),
-        description: "Get the most recent log entries. Useful for seeing what's happening right now.".to_string(),
+        description:
+            "Get the most recent log entries. Useful for seeing what's happening right now."
+                .to_string(),
         input_schema: serde_json::json!({
             "type": "object",
             "properties": {
@@ -130,7 +132,8 @@ pub fn create_tool_registry() -> ToolRegistry {
     // query_metrics tool
     registry.register(McpTool {
         name: "query_metrics".to_string(),
-        description: "Query metrics with aggregation over time. Returns time series data.".to_string(),
+        description: "Query metrics with aggregation over time. Returns time series data."
+            .to_string(),
         input_schema: serde_json::json!({
             "type": "object",
             "required": ["metric_name"],
@@ -207,25 +210,24 @@ async fn execute_search_logs(clickhouse: &ClickHouseClient, params: Value) -> Re
     let hours = p.hours.unwrap_or(1);
     let limit = p.limit.unwrap_or(50);
 
-    let min_severity = p.min_severity.and_then(|s| match s.to_uppercase().as_str() {
-        "TRACE" => Some(LogSeverity::Trace),
-        "DEBUG" => Some(LogSeverity::Debug),
-        "INFO" => Some(LogSeverity::Info),
-        "WARN" => Some(LogSeverity::Warn),
-        "ERROR" => Some(LogSeverity::Error),
-        "FATAL" => Some(LogSeverity::Fatal),
-        _ => None,
-    });
+    let min_severity = p
+        .min_severity
+        .and_then(|s| match s.to_uppercase().as_str() {
+            "TRACE" => Some(LogSeverity::Trace),
+            "DEBUG" => Some(LogSeverity::Debug),
+            "INFO" => Some(LogSeverity::Info),
+            "WARN" => Some(LogSeverity::Warn),
+            "ERROR" => Some(LogSeverity::Error),
+            "FATAL" => Some(LogSeverity::Fatal),
+            _ => None,
+        });
 
     let search_params = LogSearchParams {
         time_range: TimeRange::last_hours(hours),
         min_severity,
         text_query: p.query,
         service_name: p.service,
-        pagination: Pagination {
-            offset: 0,
-            limit,
-        },
+        pagination: Pagination { offset: 0, limit },
     };
 
     let logs = clickhouse.search_logs(&search_params).await?;
@@ -262,15 +264,17 @@ async fn execute_tail_logs(clickhouse: &ClickHouseClient, params: Value) -> Resu
 
     let count = p.count.unwrap_or(20);
 
-    let min_severity = p.min_severity.and_then(|s| match s.to_uppercase().as_str() {
-        "TRACE" => Some(LogSeverity::Trace),
-        "DEBUG" => Some(LogSeverity::Debug),
-        "INFO" => Some(LogSeverity::Info),
-        "WARN" => Some(LogSeverity::Warn),
-        "ERROR" => Some(LogSeverity::Error),
-        "FATAL" => Some(LogSeverity::Fatal),
-        _ => None,
-    });
+    let min_severity = p
+        .min_severity
+        .and_then(|s| match s.to_uppercase().as_str() {
+            "TRACE" => Some(LogSeverity::Trace),
+            "DEBUG" => Some(LogSeverity::Debug),
+            "INFO" => Some(LogSeverity::Info),
+            "WARN" => Some(LogSeverity::Warn),
+            "ERROR" => Some(LogSeverity::Error),
+            "FATAL" => Some(LogSeverity::Fatal),
+            _ => None,
+        });
 
     let search_params = LogSearchParams {
         time_range: TimeRange::last_minutes(10),
@@ -337,7 +341,9 @@ async fn execute_get_error_summary(clickhouse: &ClickHouseClient, params: Value)
         } else {
             log.body.clone()
         };
-        let entry = error_counts.entry(pattern.clone()).or_insert((0, log.body.clone()));
+        let entry = error_counts
+            .entry(pattern.clone())
+            .or_insert((0, log.body.clone()));
         entry.0 += 1;
     }
 
@@ -378,17 +384,20 @@ async fn execute_query_metrics(clickhouse: &ClickHouseClient, params: Value) -> 
     let hours = p.hours.unwrap_or(1);
     let interval = p.interval_seconds.unwrap_or(60);
 
-    let aggregation = p.aggregation.and_then(|s| match s.to_lowercase().as_str() {
-        "avg" => Some(Aggregation::Avg),
-        "min" => Some(Aggregation::Min),
-        "max" => Some(Aggregation::Max),
-        "sum" => Some(Aggregation::Sum),
-        "count" => Some(Aggregation::Count),
-        "p50" => Some(Aggregation::P50),
-        "p90" => Some(Aggregation::P90),
-        "p99" => Some(Aggregation::P99),
-        _ => None,
-    }).unwrap_or(Aggregation::Avg);
+    let aggregation = p
+        .aggregation
+        .and_then(|s| match s.to_lowercase().as_str() {
+            "avg" => Some(Aggregation::Avg),
+            "min" => Some(Aggregation::Min),
+            "max" => Some(Aggregation::Max),
+            "sum" => Some(Aggregation::Sum),
+            "count" => Some(Aggregation::Count),
+            "p50" => Some(Aggregation::P50),
+            "p90" => Some(Aggregation::P90),
+            "p99" => Some(Aggregation::P99),
+            _ => None,
+        })
+        .unwrap_or(Aggregation::Avg);
 
     let query_params = archives_common::clickhouse::MetricQueryParams {
         metric_name: p.metric_name.clone(),
@@ -429,12 +438,21 @@ async fn execute_get_system_health(clickhouse: &ClickHouseClient, _params: Value
         min_severity: Some(LogSeverity::Error),
         text_query: None,
         service_name: None,
-        pagination: Pagination { offset: 0, limit: 1 },
+        pagination: Pagination {
+            offset: 0,
+            limit: 1,
+        },
     };
-    let recent_errors = clickhouse.count_logs(&error_params.time_range).await.unwrap_or(0);
+    let recent_errors = clickhouse
+        .count_logs(&error_params.time_range)
+        .await
+        .unwrap_or(0);
 
     // Get total log count for last hour
-    let total_logs = clickhouse.count_logs(&TimeRange::last_hours(1)).await.unwrap_or(0);
+    let total_logs = clickhouse
+        .count_logs(&TimeRange::last_hours(1))
+        .await
+        .unwrap_or(0);
 
     Ok(serde_json::json!({
         "status": "operational",
@@ -466,5 +484,89 @@ fn format_bytes(bytes: u64) -> String {
         format!("{:.2} KB", bytes as f64 / KB as f64)
     } else {
         format!("{} bytes", bytes)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tool_registry_new() {
+        let registry = ToolRegistry::new();
+        assert!(registry.list().is_empty());
+    }
+
+    #[test]
+    fn test_tool_registry_register() {
+        let mut registry = ToolRegistry::new();
+        registry.register(McpTool {
+            name: "test_tool".to_string(),
+            description: "A test tool".to_string(),
+            input_schema: serde_json::json!({}),
+        });
+        assert_eq!(registry.list().len(), 1);
+    }
+
+    #[test]
+    fn test_tool_registry_get() {
+        let mut registry = ToolRegistry::new();
+        registry.register(McpTool {
+            name: "test_tool".to_string(),
+            description: "A test tool".to_string(),
+            input_schema: serde_json::json!({}),
+        });
+
+        let tool = registry.get("test_tool");
+        assert!(tool.is_some());
+        assert_eq!(tool.unwrap().name, "test_tool");
+
+        let missing = registry.get("nonexistent");
+        assert!(missing.is_none());
+    }
+
+    #[test]
+    fn test_create_tool_registry() {
+        let registry = create_tool_registry();
+        let tools = registry.list();
+
+        // Should have 5 tools
+        assert_eq!(tools.len(), 5);
+
+        // Check all expected tools exist
+        assert!(registry.get("search_logs").is_some());
+        assert!(registry.get("tail_logs").is_some());
+        assert!(registry.get("get_error_summary").is_some());
+        assert!(registry.get("query_metrics").is_some());
+        assert!(registry.get("get_system_health").is_some());
+    }
+
+    #[test]
+    fn test_format_bytes() {
+        assert_eq!(format_bytes(0), "0 bytes");
+        assert_eq!(format_bytes(500), "500 bytes");
+        assert_eq!(format_bytes(1024), "1.00 KB");
+        assert_eq!(format_bytes(1536), "1.50 KB");
+        assert_eq!(format_bytes(1024 * 1024), "1.00 MB");
+        assert_eq!(format_bytes(1024 * 1024 * 1024), "1.00 GB");
+        assert_eq!(format_bytes(1024 * 1024 * 1024 * 2), "2.00 GB");
+    }
+
+    #[test]
+    fn test_mcp_tool_serialization() {
+        let tool = McpTool {
+            name: "test".to_string(),
+            description: "Test description".to_string(),
+            input_schema: serde_json::json!({
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string"}
+                }
+            }),
+        };
+
+        let json = serde_json::to_string(&tool).unwrap();
+        assert!(json.contains("\"name\":\"test\""));
+        assert!(json.contains("\"description\":\"Test description\""));
     }
 }

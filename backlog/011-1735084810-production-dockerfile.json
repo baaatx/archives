@@ -2,7 +2,7 @@
   "id": "011",
   "timestamp": 1735084810,
   "title": "Create Production Dockerfile",
-  "status": "TODO",
+  "status": "DONE",
   "priority": "P1",
   "effort": {"estimate": "2h", "actual": null},
   "created": "2025-12-25T00:00:10Z",

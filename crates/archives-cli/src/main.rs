@@ -13,7 +13,11 @@ use tracing_subscriber::EnvFilter;
 #[command(version)]
 struct Cli {
     /// API server URL
-    #[arg(long, env = "ARCHIVES_API_URL", default_value = "http://localhost:8080")]
+    #[arg(
+        long,
+        env = "ARCHIVES_API_URL",
+        default_value = "http://localhost:8080"
+    )]
     api_url: String,
 
     /// Output format

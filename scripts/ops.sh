@@ -35,6 +35,9 @@ ops() {
         restart)    _ops_stop "$@" && _ops_start "$@" ;;
         dev)        _ops_dev "$@" ;;
         test)       _ops_test "$@" ;;
+        lint)       _ops_lint "$@" ;;
+        fmt)        _ops_fmt "$@" ;;
+        check)      _ops_check "$@" ;;
         status)     _ops_status "$@" ;;
         logs)       _ops_logs "$@" ;;
         clean)      _ops_clean "$@" ;;
@@ -178,6 +181,50 @@ _ops_test() {
     esac
 }
 
+_ops_lint() {
+    echo -e "${BLUE}Running clippy lints${NC}..."
+    cd "$ARCHIVES_ROOT"
+    cargo clippy --workspace --all-targets -- -D warnings
+    echo -e "${GREEN}Lint complete${NC}"
+}
+
+_ops_fmt() {
+    local mode="${1:-check}"
+    cd "$ARCHIVES_ROOT"
+
+    case "$mode" in
+        check)
+            echo -e "${BLUE}Checking formatting${NC}..."
+            cargo fmt --all -- --check
+            ;;
+        fix)
+            echo -e "${BLUE}Formatting code${NC}..."
+            cargo fmt --all
+            ;;
+        *)
+            echo -e "${RED}Unknown format mode:${NC} $mode (use: check, fix)"
+            return 1
+            ;;
+    esac
+    echo -e "${GREEN}Format complete${NC}"
+}
+
+_ops_check() {
+    echo -e "${BLUE}Running all checks (fmt, lint, test)${NC}..."
+    cd "$ARCHIVES_ROOT"
+
+    echo -e "\n${YELLOW}Step 1/3: Format check${NC}"
+    cargo fmt --all -- --check || { echo -e "${RED}Format check failed${NC}"; return 1; }
+
+    echo -e "\n${YELLOW}Step 2/3: Clippy lint${NC}"
+    cargo clippy --workspace --all-targets -- -D warnings || { echo -e "${RED}Lint check failed${NC}"; return 1; }
+
+    echo -e "\n${YELLOW}Step 3/3: Tests${NC}"
+    cargo test --workspace || { echo -e "${RED}Tests failed${NC}"; return 1; }
+
+    echo -e "\n${GREEN}All checks passed!${NC}"
+}
+
 _ops_status() {
     echo -e "${BLUE}Archives Status${NC}"
     echo "================"
@@ -272,6 +319,13 @@ Commands:
   test [scope]       Run tests
                      Scopes: all, unit, integration, common, api, mcp, cli
 
+  lint               Run clippy lints
+
+  fmt [mode]         Check or fix code formatting
+                     Modes: check (default), fix
+
+  check              Run all checks (fmt, lint, test)
+
   status             Show status of all services
 
   logs [service]     Tail service logs
@@ -285,6 +339,9 @@ Examples:
   ops dev api        # Run API server in dev mode
   ops logs otel-collector
   ops test common
+  ops lint           # Run clippy
+  ops fmt fix        # Format code
+  ops check          # Run all CI checks
 EOF
 }
 

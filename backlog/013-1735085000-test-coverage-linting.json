@@ -1,0 +1,39 @@
+{
+  "id": "013",
+  "timestamp": 1735085000,
+  "title": "Add Test Coverage and Linting",
+  "status": "DONE",
+  "priority": "P1",
+  "effort": {"estimate": "3h", "actual": null},
+  "created": "2025-12-25T00:03:20Z",
+  "updated": "2025-12-25T00:03:20Z",
+  "assignee": "unassigned",
+  "description": "Add comprehensive test coverage for all crates and configure linting with clippy. Set up CI-ready test and lint commands.",
+  "tasks": [
+    {"text": "Add unit tests for archives-common types and client", "done": false},
+    {"text": "Add unit tests for archives-api handlers", "done": false},
+    {"text": "Add unit tests for archives-mcp tools", "done": false},
+    {"text": "Configure clippy with project-specific lints", "done": false},
+    {"text": "Add rustfmt configuration", "done": false},
+    {"text": "Update ops.sh with lint and format commands", "done": false}
+  ],
+  "acceptance_criteria": [
+    "All crates have unit tests",
+    "cargo test passes",
+    "cargo clippy passes with no warnings",
+    "cargo fmt --check passes"
+  ],
+  "dependencies": {
+    "depends_on": [],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["testing", "quality", "ci"],
+  "notes": "",
+  "metadata": {
+    "category": "quality",
+    "complexity": "medium"
+  }
+}

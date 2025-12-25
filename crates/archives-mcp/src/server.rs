@@ -77,8 +77,14 @@ async fn shutdown_signal() {
 
 async fn health_handler(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     match state.clickhouse.health_check().await {
-        Ok(true) => (StatusCode::OK, Json(serde_json::json!({"status": "healthy"}))),
-        _ => (StatusCode::SERVICE_UNAVAILABLE, Json(serde_json::json!({"status": "unhealthy"}))),
+        Ok(true) => (
+            StatusCode::OK,
+            Json(serde_json::json!({"status": "healthy"})),
+        ),
+        _ => (
+            StatusCode::SERVICE_UNAVAILABLE,
+            Json(serde_json::json!({"status": "unhealthy"})),
+        ),
     }
 }
 
@@ -102,18 +108,24 @@ async fn mcp_handler(
     info!(tool = %request.tool, "MCP tool invocation");
 
     match tools::execute_tool(&state.clickhouse, &request.tool, request.params).await {
-        Ok(result) => (StatusCode::OK, Json(McpResponse {
-            success: true,
-            data: Some(result),
-            error: None,
-        })),
+        Ok(result) => (
+            StatusCode::OK,
+            Json(McpResponse {
+                success: true,
+                data: Some(result),
+                error: None,
+            }),
+        ),
         Err(e) => {
             error!(tool = %request.tool, error = %e, "Tool execution failed");
-            (StatusCode::OK, Json(McpResponse {
-                success: false,
-                data: None,
-                error: Some(e.to_string()),
-            }))
+            (
+                StatusCode::OK,
+                Json(McpResponse {
+                    success: false,
+                    data: None,
+                    error: Some(e.to_string()),
+                }),
+            )
         }
     }
 }

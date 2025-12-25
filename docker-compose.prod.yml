@@ -1,0 +1,38 @@
+# Production Docker Compose
+# Includes API and MCP servers
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  archives-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: archives-api
+    ports:
+      - "8080:8080"
+    environment:
+      - CLICKHOUSE_URL=http://clickhouse:8123
+      - CLICKHOUSE_DATABASE=default
+      - RUST_LOG=archives_api=info
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  archives-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: mcp
+    container_name: archives-mcp
+    ports:
+      - "8081:8081"
+    environment:
+      - CLICKHOUSE_URL=http://clickhouse:8123
+      - CLICKHOUSE_DATABASE=default
+      - RUST_LOG=archives_mcp=info
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
