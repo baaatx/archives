@@ -19,7 +19,7 @@
     "Response is LLM-friendly formatted"
   ],
   "dependencies": {
-    "depends_on": ["005", "006"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": [],

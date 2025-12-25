@@ -21,7 +21,7 @@
     "CLI supports --api-key flag"
   ],
   "dependencies": {
-    "depends_on": ["018"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": ["021"],

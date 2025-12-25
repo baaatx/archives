@@ -22,7 +22,7 @@
     "Has proper health check"
   ],
   "dependencies": {
-    "depends_on": ["004", "006"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": [],

@@ -21,7 +21,7 @@
     "Storage usage visible in status"
   ],
   "dependencies": {
-    "depends_on": ["002", "007"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": [],

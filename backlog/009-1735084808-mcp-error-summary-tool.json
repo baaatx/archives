@@ -20,7 +20,7 @@
     "Includes count and sample for each pattern"
   ],
   "dependencies": {
-    "depends_on": ["006"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": [],

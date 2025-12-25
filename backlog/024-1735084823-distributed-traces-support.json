@@ -22,7 +22,7 @@
     "MCP tools expose trace search"
   ],
   "dependencies": {
-    "depends_on": ["004", "005"],
+    "depends_on": [],
     "blocks": [],
     "blocked_by": [],
     "related": [],
