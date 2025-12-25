@@ -1,0 +1,37 @@
+{
+  "id": "024",
+  "timestamp": 1735084823,
+  "title": "Add Distributed Traces Support",
+  "status": "TODO",
+  "priority": "P3",
+  "effort": {"estimate": "8h", "actual": null},
+  "created": "2025-12-25T00:00:23Z",
+  "updated": "2025-12-25T00:00:23Z",
+  "assignee": "unassigned",
+  "description": "Enable traces signal type with trace visualization and trace-log correlation. Phase 2 feature.",
+  "tasks": [
+    {"text": "Add trace query methods to ClickHouse client", "done": false},
+    {"text": "Implement trace search API endpoint", "done": false},
+    {"text": "Add trace visualization endpoint", "done": false},
+    {"text": "Implement trace-log correlation", "done": false},
+    {"text": "Add trace MCP tools", "done": false}
+  ],
+  "acceptance_criteria": [
+    "Can search and view traces",
+    "Traces correlate with logs via trace_id",
+    "MCP tools expose trace search"
+  ],
+  "dependencies": {
+    "depends_on": ["004", "005"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["traces", "phase2"],
+  "notes": "OTEL Collector already ingests traces to ClickHouse",
+  "metadata": {
+    "category": "feature",
+    "complexity": "high"
+  }
+}

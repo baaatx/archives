@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # ClickHouse database for log and metrics storage
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.12
+    container_name: archives-clickhouse
+    ports:
+      - "8123:8123"   # HTTP interface
+      - "9000:9000"   # Native protocol
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    environment:
+      - CLICKHOUSE_DB=default
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    healthcheck:
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  # OpenTelemetry Collector for ingesting telemetry
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.115.0
+    container_name: archives-otel-collector
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "8888:8888"   # Prometheus metrics (collector itself)
+      - "13133:13133" # Health check
+    volumes:
+      - ./config/otel-collector.yaml:/etc/otelcol-contrib/config.yaml:ro
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:13133/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Archives API server (optional - use for production or when not developing)
+  # archives-api:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: api
+  #   container_name: archives-api
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - CLICKHOUSE_URL=http://clickhouse:8123
+  #     - CLICKHOUSE_DATABASE=default
+  #     - RUST_LOG=archives_api=debug
+  #   depends_on:
+  #     clickhouse:
+  #       condition: service_healthy
+
+  # Archives MCP server (optional)
+  # archives-mcp:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     target: mcp
+  #   container_name: archives-mcp
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - CLICKHOUSE_URL=http://clickhouse:8123
+  #     - CLICKHOUSE_DATABASE=default
+  #     - RUST_LOG=archives_mcp=debug
+  #   depends_on:
+  #     clickhouse:
+  #       condition: service_healthy
+
+volumes:
+  clickhouse_data:
+  clickhouse_logs:
+
+networks:
+  default:
+    name: archives-network

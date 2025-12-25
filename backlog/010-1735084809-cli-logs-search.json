@@ -1,0 +1,36 @@
+{
+  "id": "010",
+  "timestamp": 1735084809,
+  "title": "Implement CLI logs search Command",
+  "status": "TODO",
+  "priority": "P1",
+  "effort": {"estimate": "2h", "actual": null},
+  "created": "2025-12-25T00:00:09Z",
+  "updated": "2025-12-25T00:00:09Z",
+  "assignee": "unassigned",
+  "description": "Implement archives logs search command with query, time range, and output format options.",
+  "tasks": [
+    {"text": "Set up clap CLI structure in archives-cli", "done": true},
+    {"text": "Implement logs search subcommand", "done": true},
+    {"text": "Add --query, --since, --until flags", "done": true},
+    {"text": "Add --format (json, table, compact) option", "done": true},
+    {"text": "Connect to archives-api for queries", "done": true}
+  ],
+  "acceptance_criteria": [
+    "CLI can search logs with filters",
+    "Multiple output formats supported"
+  ],
+  "dependencies": {
+    "depends_on": ["004"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["cli", "logs"],
+  "notes": "Already implemented in initial codebase - verify and test",
+  "metadata": {
+    "category": "feature",
+    "complexity": "medium"
+  }
+}

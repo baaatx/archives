@@ -1,0 +1,36 @@
+{
+  "id": "022",
+  "timestamp": 1735084821,
+  "title": "Implement Authentication and API Keys",
+  "status": "TODO",
+  "priority": "P3",
+  "effort": {"estimate": "3h", "actual": null},
+  "created": "2025-12-25T00:00:21Z",
+  "updated": "2025-12-25T00:00:21Z",
+  "assignee": "unassigned",
+  "description": "Add API key authentication for production security.",
+  "tasks": [
+    {"text": "Design API key format and storage", "done": false},
+    {"text": "Implement authentication middleware", "done": false},
+    {"text": "Add API key management endpoints", "done": false},
+    {"text": "Update CLI to support API key", "done": false}
+  ],
+  "acceptance_criteria": [
+    "API endpoints require valid API key",
+    "API keys can be created and revoked",
+    "CLI supports --api-key flag"
+  ],
+  "dependencies": {
+    "depends_on": ["018"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": ["021"],
+    "external": []
+  },
+  "tags": ["security", "auth"],
+  "notes": "",
+  "metadata": {
+    "category": "security",
+    "complexity": "medium"
+  }
+}

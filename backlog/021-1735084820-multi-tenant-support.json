@@ -1,0 +1,36 @@
+{
+  "id": "021",
+  "timestamp": 1735084820,
+  "title": "Add Multi-tenant Support",
+  "status": "TODO",
+  "priority": "P3",
+  "effort": {"estimate": "4h", "actual": null},
+  "created": "2025-12-25T00:00:20Z",
+  "updated": "2025-12-25T00:00:20Z",
+  "assignee": "unassigned",
+  "description": "Add tenant isolation for multi-customer deployments using namespace/tenant attribute filtering.",
+  "tasks": [
+    {"text": "Design tenant isolation strategy", "done": false},
+    {"text": "Add tenant_id to all queries", "done": false},
+    {"text": "Implement tenant extraction from requests", "done": false},
+    {"text": "Update API and MCP to enforce tenant isolation", "done": false}
+  ],
+  "acceptance_criteria": [
+    "Each tenant only sees their own logs/metrics",
+    "Tenant isolation enforced at query level",
+    "No cross-tenant data leakage"
+  ],
+  "dependencies": {
+    "depends_on": ["004", "005"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["multi-tenant", "security"],
+  "notes": "Required for 50+ customer scale",
+  "metadata": {
+    "category": "feature",
+    "complexity": "high"
+  }
+}

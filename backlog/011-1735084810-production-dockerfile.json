@@ -1,0 +1,37 @@
+{
+  "id": "011",
+  "timestamp": 1735084810,
+  "title": "Create Production Dockerfile",
+  "status": "TODO",
+  "priority": "P1",
+  "effort": {"estimate": "2h", "actual": null},
+  "created": "2025-12-25T00:00:10Z",
+  "updated": "2025-12-25T00:00:10Z",
+  "assignee": "unassigned",
+  "description": "Create multi-stage Dockerfile for production builds with proper caching and small final image.",
+  "tasks": [
+    {"text": "Create multi-stage Dockerfile", "done": false},
+    {"text": "Add dependency caching layer", "done": false},
+    {"text": "Use distroless or alpine final image", "done": false},
+    {"text": "Add non-root user", "done": false},
+    {"text": "Add health check instruction", "done": false}
+  ],
+  "acceptance_criteria": [
+    "Final image under 100MB",
+    "Runs as non-root user",
+    "Has proper health check"
+  ],
+  "dependencies": {
+    "depends_on": ["004", "006"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["infrastructure", "docker"],
+  "notes": "",
+  "metadata": {
+    "category": "infrastructure",
+    "complexity": "medium"
+  }
+}

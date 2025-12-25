@@ -1,0 +1,35 @@
+# Archives Configuration
+# Copy to config.toml and adjust as needed
+
+[clickhouse]
+# ClickHouse HTTP URL
+url = "http://localhost:8123"
+# Database name
+database = "default"
+# Optional authentication
+# username = "default"
+# password = ""
+# Connection pool size
+pool_size = 10
+
+[api]
+# API server host
+host = "0.0.0.0"
+# API server port
+port = 8080
+# Request timeout in seconds
+timeout_secs = 30
+
+[mcp]
+# MCP server host
+host = "0.0.0.0"
+# MCP server port
+port = 8081
+# Enable MCP server
+enabled = true
+
+[retention]
+# Log retention in days
+log_retention_days = 30
+# Metrics retention in days
+metrics_retention_days = 90

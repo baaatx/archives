@@ -1,0 +1,35 @@
+{
+  "id": "009",
+  "timestamp": 1735084808,
+  "title": "Implement MCP get_error_summary Tool",
+  "status": "TODO",
+  "priority": "P1",
+  "effort": {"estimate": "2h", "actual": null},
+  "created": "2025-12-25T00:00:08Z",
+  "updated": "2025-12-25T00:00:08Z",
+  "assignee": "unassigned",
+  "description": "Add get_error_summary tool that analyzes error patterns in recent logs and groups by message pattern.",
+  "tasks": [
+    {"text": "Define tool schema with time window param", "done": true},
+    {"text": "Implement error aggregation query", "done": true},
+    {"text": "Group errors by pattern/message", "done": true},
+    {"text": "Include count and example for each pattern", "done": true}
+  ],
+  "acceptance_criteria": [
+    "Returns top error patterns in time window",
+    "Includes count and sample for each pattern"
+  ],
+  "dependencies": {
+    "depends_on": ["006"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["mcp", "analysis"],
+  "notes": "Already implemented in initial codebase - verify and test",
+  "metadata": {
+    "category": "feature",
+    "complexity": "medium"
+  }
+}

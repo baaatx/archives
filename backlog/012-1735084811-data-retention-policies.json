@@ -1,0 +1,36 @@
+{
+  "id": "012",
+  "timestamp": 1735084811,
+  "title": "Implement Data Retention Policies",
+  "status": "TODO",
+  "priority": "P1",
+  "effort": {"estimate": "2h", "actual": null},
+  "created": "2025-12-25T00:00:11Z",
+  "updated": "2025-12-25T00:00:11Z",
+  "assignee": "unassigned",
+  "description": "Configure ClickHouse TTL for automatic data expiration and implement CLI command for manual cleanup.",
+  "tasks": [
+    {"text": "Add TTL configuration to table schemas", "done": false},
+    {"text": "Create configurable retention settings", "done": false},
+    {"text": "Implement archives admin gc command", "done": false},
+    {"text": "Add storage usage monitoring to status endpoint", "done": false}
+  ],
+  "acceptance_criteria": [
+    "Old data automatically expires based on config",
+    "Manual cleanup command available",
+    "Storage usage visible in status"
+  ],
+  "dependencies": {
+    "depends_on": ["002", "007"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["operations", "storage"],
+  "notes": "OTEL Collector config already has TTL: 720h for 30 days",
+  "metadata": {
+    "category": "operations",
+    "complexity": "medium"
+  }
+}

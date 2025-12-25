@@ -1,0 +1,34 @@
+{
+  "id": "008",
+  "timestamp": 1735084807,
+  "title": "Implement MCP query_metrics Tool",
+  "status": "TODO",
+  "priority": "P1",
+  "effort": {"estimate": "2h", "actual": null},
+  "created": "2025-12-25T00:00:07Z",
+  "updated": "2025-12-25T00:00:07Z",
+  "assignee": "unassigned",
+  "description": "Add query_metrics tool to MCP server for agents to query system metrics with aggregation support.",
+  "tasks": [
+    {"text": "Define query_metrics tool schema", "done": true},
+    {"text": "Implement handler with aggregation support", "done": true},
+    {"text": "Add formatted response for LLM consumption", "done": true}
+  ],
+  "acceptance_criteria": [
+    "Agents can query metrics via MCP",
+    "Response is LLM-friendly formatted"
+  ],
+  "dependencies": {
+    "depends_on": ["005", "006"],
+    "blocks": [],
+    "blocked_by": [],
+    "related": [],
+    "external": []
+  },
+  "tags": ["mcp", "metrics"],
+  "notes": "Already implemented in initial codebase - verify and test",
+  "metadata": {
+    "category": "feature",
+    "complexity": "medium"
+  }
+}
